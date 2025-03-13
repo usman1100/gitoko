@@ -91,3 +91,16 @@ func GetOnlyBranchCommits(branch string) ([]string, error) {
 	commits := strings.Split(string(cmd), "\n")
 	return sanitize.SanitizeCommits(commits), nil
 }
+
+func GetAllLocalBranches() ([]string, error) {
+	cmd, err := exec.Command("git", "branch", "--list").Output()
+	if err != nil {
+		return nil, errors.New("could not get branches")
+	}
+
+	branches := strings.Split(string(cmd), "\n")
+	for i, branch := range branches {
+		branches[i] = sanitize.SanitizeBranchName(branch)
+	}
+	return branches, nil
+}

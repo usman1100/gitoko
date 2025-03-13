@@ -18,7 +18,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	commits, err := git.GetOnlyBranchCommits(branchName)
+	var commits []string
+
+	if branchName == "" {
+		commits, err = git.GetAllCommits()
+	} else {
+		commits, err = git.GetOnlyBranchCommits(branchName)
+	}
 
 	if err != nil {
 		fmt.Println(err.Error())

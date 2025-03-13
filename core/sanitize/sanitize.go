@@ -85,3 +85,7 @@ func SanitizeCommits(commits []string) []string {
 	}
 	return cleaned
 }
+
+func SanitizeBranchName(name string) string {
+	return strings.TrimSpace(name)
+}
