@@ -1,17 +1,26 @@
 package git
 
 import (
-	"fmt"
+	"errors"
 	"os/exec"
 )
 
-func Checkout(branch string) {
-	cmd, err := exec.Command("git", "checkout", branch).Output()
-	if err != nil {
-		panic(err)
+func Checkout(branch string) error {
+	_, err := exec.Command("git", "checkout", branch).Output()
+
+	if branch == "" {
+		defaultBranch, err := GetCurrentBranch()
+		if err != nil {
+			return errors.New("could not get current branch")
+		}
+		branch = defaultBranch
 	}
 
-	fmt.Println(string(cmd))
+	if err != nil {
+		return errors.New("could not switch to branch " + branch)
+	}
+
+	return nil
 }
 
 func IsCurrentDirectoryARepo() bool {
@@ -21,4 +30,13 @@ func IsCurrentDirectoryARepo() bool {
 	}
 
 	return string(cmd) == "true\n"
+}
+
+func GetCurrentBranch() (string, error) {
+	cmd, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+	if err != nil {
+		return "", errors.New("could not get current branch")
+	}
+
+	return string(cmd), nil
 }
