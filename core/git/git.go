@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/charmbracelet/huh"
 	"github.com/usman1100/gitoko/core/sanitize"
 )
 
@@ -54,4 +55,18 @@ func GetAllCommits() ([]string, error) {
 	commits := strings.Split(string(cmd), "\n")
 	return sanitize.SanitizeCommits(commits), nil
 
+}
+
+func GetAllCommitsAsOptions() ([]huh.Option[string], error) {
+	commits, err := GetAllCommits()
+	if err != nil {
+		return nil, err
+	}
+	commitOptions := make([]huh.Option[string], len(commits))
+
+	for i, commit := range commits {
+		commitOptions[i] = huh.NewOption(commit, commit)
+	}
+
+	return commitOptions, nil
 }

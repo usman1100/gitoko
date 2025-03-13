@@ -7,16 +7,10 @@ import (
 
 func main() {
 
-	commits, err := git.GetAllCommits()
+	commitOptions, err := git.GetAllCommitsAsOptions()
 
 	if err != nil {
 		panic(err)
-	}
-
-	commitOptions := make([]huh.Option[string], len(commits))
-
-	for i, commit := range commits {
-		commitOptions[i] = huh.NewOption(commit, commit)
 	}
 
 	var Selections []string
