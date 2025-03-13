@@ -5,7 +5,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/charmbracelet/huh"
 	"github.com/usman1100/gitoko/core/git"
 	"github.com/usman1100/gitoko/core/ui"
 )
@@ -28,28 +27,15 @@ func main() {
 
 	commitOptions := git.CommitsToOptions(commits)
 
-	var Selections []string
+	selections, err := ui.InputCommitSelection(commitOptions)
 
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().
-				Title("Pick a commit: ").
-				Height(20).
-				Options(
-					commitOptions...,
-				).
-				Value(&Selections),
-		),
-	)
-
-	err = form.Run()
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	fmt.Println("You selected " + strconv.Itoa(len(Selections)) + " commits\n")
-	for _, selection := range Selections {
+	fmt.Println("You selected " + strconv.Itoa(len(selections)) + " commits\n")
+	for _, selection := range selections {
 		println(selection)
 	}
 

@@ -35,3 +35,27 @@ func InputBranchName() (string, error) {
 
 	return branchName, nil
 }
+
+func InputCommitSelection(options []huh.Option[string]) ([]string, error) {
+
+	var Selections []string
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().
+				Title("Pick a commit: ").
+				Height(20).
+				Options(
+					options...,
+				).
+				Value(&Selections),
+		),
+	)
+
+	err := form.Run()
+	if err != nil {
+		return nil, errors.New("invalid commit selection")
+	}
+
+	return Selections, nil
+}
