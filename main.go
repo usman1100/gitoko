@@ -25,6 +25,7 @@ func main() {
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().
 				Title("Pick a commit: ").
+				Height(20).
 				Options(
 					commitOptions...,
 				).
