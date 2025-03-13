@@ -13,11 +13,8 @@ func InputBranchName() (string, error) {
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
-				Title("Branch Name: ").
+				Title("Pick a branch name to pick commits from or leave empty for ALL commits ").
 				Validate(func(s string) error {
-					if len(s) == 0 {
-						return errors.New("branch name cannot be empty")
-					}
 					if len(s) > 255 {
 						return errors.New("branch name cannot exceed 255 characters")
 					}
