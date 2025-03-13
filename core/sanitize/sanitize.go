@@ -67,3 +67,21 @@ func ValidateBranchName(name string) error {
 	// If no errors, the branch name is valid
 	return nil
 }
+
+func SanitizeCommit(commit string) string {
+	// "\"8faf324dbd933b7c1d5f8f76d4e4327744081dbf chore: use promptui for tui\"\n\"0fa5bc4736a731ac50d7438b9acbd516e72daa3f init\""
+	// '8faf324dbd933b7c1d5f8f76d4e4327744081dbf chore: use promptui for tui'
+
+	cleaned := strings.Replace(commit, "\"", "", -1)
+	cleaned = strings.Replace(cleaned, "\\n", "", -1)
+	cleaned = strings.TrimSpace(cleaned)
+	return cleaned
+}
+
+func SanitizeCommits(commits []string) []string {
+	var cleaned []string
+	for _, commit := range commits {
+		cleaned = append(cleaned, SanitizeCommit(commit))
+	}
+	return cleaned
+}

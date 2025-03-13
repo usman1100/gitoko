@@ -3,6 +3,9 @@ package git
 import (
 	"errors"
 	"os/exec"
+	"strings"
+
+	"github.com/usman1100/gitoko/core/sanitize"
 )
 
 func Checkout(branch string) error {
@@ -39,4 +42,16 @@ func GetCurrentBranch() (string, error) {
 	}
 
 	return string(cmd), nil
+}
+
+func GetAllCommits() ([]string, error) {
+	// git log --all --pretty=format:"%H %s"
+	cmd, err := exec.Command("git", "log", "--all", "--pretty=format:\"%H %s\"").Output()
+	if err != nil {
+		return nil, errors.New("could not get commits")
+	}
+
+	commits := strings.Split(string(cmd), "\n")
+	return sanitize.SanitizeCommits(commits), nil
+
 }
