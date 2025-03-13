@@ -70,3 +70,24 @@ func GetAllCommitsAsOptions() ([]huh.Option[string], error) {
 
 	return commitOptions, nil
 }
+
+func CommitsToOptions(commits []string) []huh.Option[string] {
+	commitOptions := make([]huh.Option[string], len(commits))
+
+	for i, commit := range commits {
+		commitOptions[i] = huh.NewOption(commit, commit)
+	}
+
+	return commitOptions
+}
+
+func GetOnlyBranchCommits(branch string) ([]string, error) {
+	// git log --pretty=format:"%H %s" branch
+	cmd, err := exec.Command("git", "log", "--pretty=format:\"%H %s\"", branch).Output()
+	if err != nil {
+		return nil, errors.New("could not get commits")
+	}
+
+	commits := strings.Split(string(cmd), "\n")
+	return sanitize.SanitizeCommits(commits), nil
+}
