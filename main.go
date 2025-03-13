@@ -1,37 +1,44 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
+	"github.com/charmbracelet/huh"
 	"github.com/usman1100/gitoko/core/git"
-
-	"github.com/manifoldco/promptui"
 )
 
 func main() {
-	if !git.IsCurrentDirectoryARepo() {
-		fmt.Println("Current directory is not a git repository")
-		os.Exit(1)
-	}
-	prompt := promptui.Prompt{
-		Label: "Branch name",
+
+	commits, err := git.GetAllCommits()
+
+	if err != nil {
+		panic(err)
 	}
 
-	inputBranchName, err := prompt.Run()
-	if err != nil {
-		fmt.Printf("Prompt failed %v\n", err)
-		return
-	}
-	if inputBranchName == "" {
-		inputBranchName = "main"
+	commitOptions := make([]huh.Option[string], len(commits))
+
+	for i, commit := range commits {
+		commitOptions[i] = huh.NewOption(commit, commit)
 	}
 
-	err = git.Checkout(inputBranchName)
+	var Selections []string
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewMultiSelect[string]().
+				Title("Pick a commit: ").
+				Options(
+					commitOptions...,
+				).
+				Value(&Selections),
+		),
+	)
+
+	err = form.Run()
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		panic(err)
 	}
-	fmt.Println("Switched to " + inputBranchName + " branch")
+
+	for _, selection := range Selections {
+		println(selection)
+	}
 
 }
