@@ -14,12 +14,15 @@ Branch Selection – Easily switch between branches to pick commits from differe
 
 Minimal Setup – Works seamlessly with existing Git repositories.
 
-# Usage
+
+
+## Usage
 
 Launch Gitoko inside any Git repository to start cherry-picking interactively:
 
-# Open Gitoko
-gitoko
+
+
+### Open Gitoko
 
 Once inside Gitoko, you can:
 
@@ -34,11 +37,15 @@ Select commits to cherry-pick.
 
 Apply selected commits to your current branch.
 
-# Why Use Gitoko?
+
+
+## Why Use Gitoko?
 
 Cherry-picking in Git can be a tedious task, especially when dealing with multiple commits. Gitoko eliminates the hassle by providing a user-friendly interface, reducing errors, and improving workflow efficiency. Whether you're managing hotfixes, backporting changes, or selectively applying commits, Gitoko makes the process smoother and faster.
 
-# License
+
+
+## License
 
 Gitoko is open-source and available under the MIT License.
 
