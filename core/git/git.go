@@ -109,14 +109,14 @@ func GetAllLocalBranches() ([]string, error) {
 func CherryPick(commit string) error {
 	_, err := exec.Command("git", "cherry-pick", commit).Output()
 	if err != nil {
-		fmt.Println("Please check for conflicts")
-		fmt.Println("If all conflicts are resolved, enter c to continue")
-		fmt.Println("Or to abort, enter abort")
+		fmt.Println("\nPlease check for conflicts")
+		fmt.Println("If all conflicts are resolved, press Enter to continue")
+		fmt.Println("Or to abort, type 'abort' and press Enter")
 
 		var input string
 		fmt.Scanln(&input)
 
-		if input == "c" {
+		if input == "" {
 			_, err := exec.Command("git", "cherry-pick", "--continue").Output()
 			if err != nil {
 				return errors.New("could not continue cherry-pick")
