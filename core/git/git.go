@@ -2,6 +2,7 @@ package git
 
 import (
 	"errors"
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -103,4 +104,36 @@ func GetAllLocalBranches() ([]string, error) {
 		branches[i] = sanitize.SanitizeBranchName(branch)
 	}
 	return branches, nil
+}
+
+func CherryPick(commit string) error {
+	_, err := exec.Command("git", "cherry-pick", commit).Output()
+	if err != nil {
+		fmt.Println("Please check for conflicts")
+		fmt.Println("If all conflicts are resolved, enter c to continue")
+		fmt.Println("Or to abort, enter abort")
+
+		var input string
+		fmt.Scanln(&input)
+
+		if input == "c" {
+			_, err := exec.Command("git", "cherry-pick", "--continue").Output()
+			if err != nil {
+				return errors.New("could not continue cherry-pick")
+			}
+			fmt.Println("Cherry-pick continued")
+		} else if input == "abort" {
+			_, err := exec.Command("git", "cherry-pick", "--abort").Output()
+			if err != nil {
+				return errors.New("could not abort cherry-pick")
+			}
+			fmt.Println("Cherry-pick aborted")
+		} else {
+			return errors.New("invalid input")
+		}
+
+		return nil
+
+	}
+	return nil
 }

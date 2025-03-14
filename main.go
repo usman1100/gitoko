@@ -44,5 +44,20 @@ func main() {
 	for _, selection := range selections {
 		println(selection)
 	}
+	{
+		var input string
+		fmt.Print("Press Enter to start cherry-picking: ")
+		fmt.Println("or to abort, press ctrl+c")
+		fmt.Println()
+		fmt.Scanln(&input)
+	}
+
+	err = ui.InuptMultipleCherryPickingPrompts(selections)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+
+	fmt.Println("Cherry-picking completed successfully")
 
 }
