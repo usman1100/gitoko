@@ -2,6 +2,19 @@
 
 Gitoko is an interactive terminal user interface (TUI) that simplifies Git cherry-picking. Instead of manually hunting down commit hashes and running multiple Git commands, Gitoko provides a streamlined, visual way to browse, select, and apply commits.
 
+## Installtion
+
+## Mac/Linux One-liner
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/usman1100/gitoko/refs/heads/install-script-docs/docs/install-unix.sh | bash
+```
+
+## Windows
+```bash
+irm https://raw.githubusercontent.com/usman1100/gitoko/refs/heads/install-script-docs/docs/install-windows.ps1 | iex
+```
+
 ## Features
 
 - Interactive UI – Navigate through commit history with an easy-to-use terminal interface.
