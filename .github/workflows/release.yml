@@ -8,9 +8,13 @@ jobs:
   build:
     name: Build and Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for all tags and branches
       
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -43,61 +47,20 @@ jobs:
       
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        run: |
+          gh release create ${{ steps.version.outputs.version }} \
+            --title "Gitoko ${{ steps.version.outputs.version }}" \
+            --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: Gitoko ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
       
-      - name: Upload MacOS AMD64 Build
-        uses: actions/upload-release-asset@v1
+      - name: Upload Release Assets
+        run: |
+          gh release upload ${{ steps.version.outputs.version }} \
+            gitoko-mac-amd64 \
+            gitoko-mac-arm64 \
+            gitoko-linux-amd64 \
+            gitoko-linux-arm64 \
+            gitoko-windows-amd64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gitoko-mac-amd64
-          asset_name: gitoko-mac-amd64
-          asset_content_type: application/octet-stream
-      
-      - name: Upload MacOS ARM64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gitoko-mac-arm64
-          asset_name: gitoko-mac-arm64
-          asset_content_type: application/octet-stream
-      
-      - name: Upload Linux AMD64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gitoko-linux-amd64
-          asset_name: gitoko-linux-amd64
-          asset_content_type: application/octet-stream
-      
-      - name: Upload Linux ARM64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gitoko-linux-arm64
-          asset_name: gitoko-linux-arm64
-          asset_content_type: application/octet-stream
-      
-      - name: Upload Windows Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./gitoko-windows-amd64.exe
-          asset_name: gitoko-windows-amd64.exe
-          asset_content_type: application/octet-stream
