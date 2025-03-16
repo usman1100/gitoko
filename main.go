@@ -11,6 +11,13 @@ import (
 
 func main() {
 
+	isInAGitRepo := git.IsCurrentDirectoryARepo()
+
+	if !isInAGitRepo {
+		fmt.Println("You are not in a git repository")
+		os.Exit(1)
+	}
+
 	branchName, err := ui.InputBranchName()
 
 	if err != nil {

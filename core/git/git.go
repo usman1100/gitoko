@@ -11,7 +11,9 @@ import (
 )
 
 func Checkout(branch string) error {
-	_, err := exec.Command("git", "checkout", branch).Output()
+	out := exec.Command("git", "checkout", branch)
+	out.Dir = "."
+	_, err := out.Output()
 
 	if branch == "" {
 		defaultBranch, err := GetCurrentBranch()
@@ -29,7 +31,9 @@ func Checkout(branch string) error {
 }
 
 func IsCurrentDirectoryARepo() bool {
-	cmd, err := exec.Command("git", "rev-parse", "--is-inside-work-tree").Output()
+	out := exec.Command("git", "rev-parse", "--is-inside-work-tree")
+	out.Dir = "."
+	cmd, err := out.Output()
 	if err != nil {
 		return false
 	}
@@ -38,7 +42,9 @@ func IsCurrentDirectoryARepo() bool {
 }
 
 func GetCurrentBranch() (string, error) {
-	cmd, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+	out := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+	out.Dir = "."
+	cmd, err := out.Output()
 	if err != nil {
 		return "", errors.New("could not get current branch")
 	}
@@ -48,7 +54,9 @@ func GetCurrentBranch() (string, error) {
 
 func GetAllCommits() ([]string, error) {
 	// git log --all --pretty=format:"%H %s"
-	cmd, err := exec.Command("git", "log", "--all", "--pretty=format:\"%H %s\"").Output()
+	out := exec.Command("git", "log", "--all", "--pretty=format:\"%H %s\"")
+	out.Dir = "."
+	cmd, err := out.Output()
 	if err != nil {
 		return nil, errors.New("could not get commits")
 	}
@@ -84,7 +92,9 @@ func CommitsToOptions(commits []string) []huh.Option[string] {
 
 func GetOnlyBranchCommits(branch string) ([]string, error) {
 	// git log --pretty=format:"%H %s" branch
-	cmd, err := exec.Command("git", "log", "--pretty=format:\"%H %s\"", branch).Output()
+	out := exec.Command("git", "log", "--pretty=format:\"%H %s\"", branch)
+	out.Dir = "."
+	cmd, err := out.Output()
 	if err != nil {
 		return nil, errors.New("could not get commits")
 	}
@@ -94,7 +104,9 @@ func GetOnlyBranchCommits(branch string) ([]string, error) {
 }
 
 func GetAllLocalBranches() ([]string, error) {
-	cmd, err := exec.Command("git", "branch", "--list").Output()
+	out := exec.Command("git", "branch", "--list")
+	out.Dir = "."
+	cmd, err := out.Output()
 	if err != nil {
 		return nil, errors.New("could not get branches")
 	}
@@ -107,7 +119,9 @@ func GetAllLocalBranches() ([]string, error) {
 }
 
 func CherryPick(commit string) error {
-	_, err := exec.Command("git", "cherry-pick", commit).Output()
+	out := exec.Command("git", "cherry-pick", commit)
+	out.Dir = "."
+	_, err := out.Output()
 	if err != nil {
 		fmt.Println("\nPlease check for conflicts")
 		fmt.Println("If all conflicts are resolved, press Enter to continue")
