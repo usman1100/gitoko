@@ -90,13 +90,38 @@ func CommitsToOptions(commits []string) []huh.Option[string] {
 	return commitOptions
 }
 
+func FetchBranch(branch string) error {
+	out := exec.Command("git", "fetch", "origin", branch)
+	out.Dir = "."
+	_, err := out.Output()
+	if err != nil {
+		return errors.New("could not fetch branch " + branch)
+	}
+
+	return nil
+}
+
 func GetOnlyBranchCommits(branch string) ([]string, error) {
 	// git log --pretty=format:"%H %s" branch
 	out := exec.Command("git", "log", "--pretty=format:\"%H %s\"", branch)
 	out.Dir = "."
 	cmd, err := out.Output()
 	if err != nil {
-		return nil, errors.New("could not get commits")
+		fmt.Println("branch not found locally, do you want to fetch it?")
+		fmt.Println("Press Enter to fetch or type 'no' and press Enter to continue without fetching")
+
+		var input string
+		fmt.Scanln(&input)
+
+		if input == "no" {
+			return nil, errors.New("branch not found")
+		}
+
+		fmt.Println("Fetching branch " + branch)
+		err := FetchBranch(branch)
+		if err != nil {
+			return nil, errors.New("could not fetch branch")
+		}
 	}
 
 	commits := strings.Split(string(cmd), "\n")
